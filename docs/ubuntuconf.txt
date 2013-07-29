@@ -1,0 +1,28 @@
+sudo add-apt-repository ppa:kubuntu-ppa/backports
+sudo apt-get update
+sudo apt-get install qt4-dev-tools libqt4-dev libqt4-core libqt4-gui
+sudo apt-get install python-kde4-dev python-qt4-dev
+
+----------------------------------------------------------------------------
+https://github.com/goinnn/Kate-plugins#other-repositories-of-plugins-to-kate
+----------------------------------------------------------------------------
+git clone https://github.com/goinnn/Kate-plugins
+cd Kate-plugins
+python setup.py build
+sudo python setup.py install
+mv build/lib.linux-i686-2.7/kate_plugins $(kde4-config --localprefix)/share/apps/kate/pate
+
+##sudo pip install Kate-plugins
+##ln -s /usr/local/lib/python2.7/dist-packages/kate_plugins/ $(kde4-config --localprefix)/share/apps/kate/pate
+
+
+Activate Kate plugins
+----------------------
+File system browser
+Tab bar
+SQL plugin
+
+
+File templates
+Multiline Tab bar
+
