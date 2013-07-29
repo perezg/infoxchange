@@ -24,7 +24,7 @@ def myExec(command, printCommand = False, printOutput = False):
   if(printCommand):
     print("Executing %s" % command)
   
-  output = subprocess.Popen(shlex.split(command), \
+  output = subprocess.Popen(shlex.split(command.encode('ascii')), \
                               stderr=subprocess.STDOUT, \
                               stdout=subprocess.PIPE).communicate()[0]
   
@@ -40,10 +40,10 @@ def myExecPipe(pipe, command, printCommand = False, printOutput = False):
   if(printCommand):
     print("Executing %s | %s" % (pipe, command))
   
-  pipeOutput = subprocess.Popen(shlex.split(pipe), \
+  pipeOutput = subprocess.Popen(shlex.split(pipe.encode('ascii')), \
                               stderr=subprocess.STDOUT, \
                               stdout=subprocess.PIPE)
-  commandOutput = subprocess.Popen(shlex.split(command), \
+  commandOutput = subprocess.Popen(shlex.split(command.encode('ascii')), \
                               stdin=pipeOutput.stdout, \
                               stderr=subprocess.STDOUT, \
                               stdout=subprocess.PIPE)
