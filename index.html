@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Infoxchange</title>
+    <style type="text/css">
+      /*margin and padding on body element
+	can introduce errors in determining
+	element position and are not recommended;
+	we turn them off as a foundation for YUI
+	CSS treatments. */
+      body {
+	margin:0;
+	padding:0;
+      }
+      
+      /* My Styles */
+      .msBackground {
+	background-color: #FFFFFF;
+      }
+    </style>
+    <!-- Common Dependencies -->
+      <script src="http://yui.yahooapis.com/2.9.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+      <script src="http://yui.yahooapis.com/2.9.0/build/container/container_core-min.js"></script>
+    <!-- End Common Dependencies -->
+    
+    <!-- Layout dependencies -->
+      <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/assets/skins/sam/layout.css">
+      
+      <!-- Source file for the Layout Manager -->
+      <script src="http://yui.yahooapis.com/2.9.0/build/element/element-min.js"></script> 
+      <script src="http://yui.yahooapis.com/2.9.0/build/layout/layout-min.js"></script>
+    <!-- End Layout dependencies -->
+    
+    <!-- Menu dependencies -->
+      <!-- Core + Skin CSS -->
+      <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/menu/assets/skins/sam/menu.css">
+      
+      <!-- Source File -->
+      <script src="http://yui.yahooapis.com/2.9.0/build/menu/menu-min.js"></script>
+    <!-- End Menu dependencies -->
+    
+    <!-- Tabview dependencies -->
+      <!-- Sam Skin CSS for TabView -->
+      <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/tabview/assets/skins/sam/tabview.css">
+
+      <!-- Source file for TabView -->
+      <script src="http://yui.yahooapis.com/2.9.0/build/tabview/tabview-min.js"></script>
+    <!-- End Tabview dependencies -->
+    
+    <!-- Connection Manager dependencies -->
+      <script src="http://yui.yahooapis.com/2.9.0/build/connection/connection-min.js"></script> 
+    <!-- End Connection Manager dependencies -->
+    
+    <style type="text/css">
+      /* Overriding YAHOO styles */
+      .yui-skin-sam .yui-navset .yui-content {
+	background: none repeat scroll 0% 0% rgb(255, 255, 255);
+      }
+    </style>
+  </head>
+  <body class="yui-skin-sam">
+    <div id="topFrame" class="msBackground">
+      <img src="images/logo.jpg"/>
+    </div>
+    <!-- End of topFrame -->
+    
+    <div id="leftFrame">
+      <div id="navmenu" class="yuimenu">
+	<div class="bd">
+	  <ul class="first-of-type">
+	    <li class="yuimenuitem">
+	      <a class="yuimenuitemlabel"
+		href="aboutme.html">About Me</a>
+	    </li>
+	    <li class="yuimenuitem">
+	      <a class="yuimenuitemlabel"
+		href="images.html">My Images</a>
+	    </li>
+	    <li class="yuimenuitem">
+	      <a class="yuimenuitemlabel"
+		href="blog.html">My Blog</a>
+	    </li>
+	    <li class="yuimenuitem">
+	      <a class="yuimenuitemlabel"
+		href="contact.html">Contact Me</a>
+	    </li>
+	    <li class="yuimenuitem">
+	      <a class="yuimenuitemlabel"
+		href="imagelinks.html">Image Resources</a>
+	    </li>
+	  </ul>
+	</div>
+      </div>
+    </div>
+    <!-- End of leftFrame -->
+    
+    <div id="centerFrame">
+      <div id="tabs" class="yui-navset">
+	<ul class="yui-nav">
+	    <li class="selected"><a href="#tab1"><em>Tab One Label</em></a></li>
+	    <li><a href="#tab2"><em>Tab Two Label</em></a></li>
+	    <li><a href="#tab3"><em>Tab Three Label</em></a></li>
+	</ul>            
+	<div class="yui-content">
+	    <div><p>Tab One Content</p></div>
+	    <div><p>Tab Two Content</p></div>
+	    <div><p>Tab Three Content</p></div>
+	</div>
+      </div>
+    </div>
+    <!-- End of centerFrame -->
+  </body>
+  <script language="javascript">
+    // Main Layout
+    YAHOO.util.Event.onDOMReady(function () {
+      var myLayout = new YAHOO.widget.Layout({
+	  units: [
+	      { position: 'top', body: 'topFrame', height: 70, collapse: false, resize: false },
+	      { position: 'left', body: 'leftFrame', width: 200, collapse: false, resize: false },
+	      { position: 'center', body: 'centerFrame' }
+	  ]
+      });
+      
+      myLayout.render();
+    });
+    // End main layout
+   
+    // Left Menu
+    YAHOO.util.Event.onDOMReady(function() {
+      var myMenu = new YAHOO.widget.Menu("navmenu", { position:"static" });
+      myMenu.render();
+    });
+    // End left menu
+    
+    // Tabview
+    YAHOO.util.Event.onDOMReady(function () {
+      var myTabs = new YAHOO.widget.TabView("tabs");
+      myTabs.render();
+    });
+  </script>
+</html>
