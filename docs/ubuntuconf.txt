@@ -1,3 +1,16 @@
+django
+------
+django-admin.py startproject infoxchange
+
+Apache
+WSGIScriptAlias /infoxchange /var/www/html/python/infoxchange/infoxchange/wsgi.py
+
+python manage.py startapp store
+
+# Extract legacy model
+python manage.py inspectdb > models.py
+
+----------------------------------------------------------------------------------------------------------------
 sudo add-apt-repository ppa:kubuntu-ppa/backports
 sudo apt-get update
 sudo apt-get install qt4-dev-tools libqt4-dev libqt4-core libqt4-gui
