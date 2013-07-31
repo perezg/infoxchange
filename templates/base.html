@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
@@ -32,6 +33,9 @@
       <script src="http://yui.yahooapis.com/2.9.0/build/layout/layout-min.js"></script>
     <!-- End Layout dependencies -->
     
+    {% block topFrameCSS %} {% endblock %}
+    
+    {% block leftFrameCSS %}
     <!-- Menu dependencies -->
       <!-- Core + Skin CSS -->
       <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/menu/assets/skins/sam/menu.css">
@@ -39,7 +43,9 @@
       <!-- Source File -->
       <script src="http://yui.yahooapis.com/2.9.0/build/menu/menu-min.js"></script>
     <!-- End Menu dependencies -->
+    {% endblock %}
     
+    {% block centerFrameCSS %}
     <!-- Tabview dependencies -->
       <!-- Sam Skin CSS for TabView -->
       <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/tabview/assets/skins/sam/tabview.css">
@@ -51,6 +57,7 @@
     <!-- Connection Manager dependencies -->
       <script src="http://yui.yahooapis.com/2.9.0/build/connection/connection-min.js"></script> 
     <!-- End Connection Manager dependencies -->
+    {% endblock %}
     
     <style type="text/css">
       /* Overriding YAHOO styles */
@@ -61,11 +68,14 @@
   </head>
   <body class="yui-skin-sam">
     <div id="topFrame" class="msBackground">
-      <img src="images/logo.jpg"/>
+      {% block topFrame %}
+      <img src="{% static "img/logo.jpg" %}"/>
+      {% endblock %}
     </div>
     <!-- End of topFrame -->
     
     <div id="leftFrame">
+      {% block leftFrame %}
       <div id="navmenu" class="yuimenu">
 	<div class="bd">
 	  <ul class="first-of-type">
@@ -92,10 +102,12 @@
 	  </ul>
 	</div>
       </div>
+      {% endblock %}
     </div>
     <!-- End of leftFrame -->
     
     <div id="centerFrame">
+      {% block centerFrame %}
       <div id="tabs" class="yui-navset">
 	<ul class="yui-nav">
 	    <li class="selected"><a href="#tab1"><em>Tab One Label</em></a></li>
@@ -108,6 +120,7 @@
 	    <div><p>Tab Three Content</p></div>
 	</div>
       </div>
+      {% endblock %}
     </div>
     <!-- End of centerFrame -->
   </body>
@@ -125,18 +138,28 @@
       myLayout.render();
     });
     // End main layout
-   
+  </script>
+  
+  {% block topFrameJS %} {% endblock %}
+  
+  {% block leftFrameJS %}
+  <script language="javascript">
     // Left Menu
     YAHOO.util.Event.onDOMReady(function() {
       var myMenu = new YAHOO.widget.Menu("navmenu", { position:"static" });
       myMenu.render();
     });
     // End left menu
-    
+  </script>
+  {% endblock %}
+  
+  {% block centerFrameJS %}
+  <script language="javascript">
     // Tabview
     YAHOO.util.Event.onDOMReady(function () {
       var myTabs = new YAHOO.widget.TabView("tabs");
       myTabs.render();
     });
   </script>
+  {% endblock %}
 </html>

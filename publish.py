@@ -43,8 +43,8 @@ def publishEverything(server):
     'ubuntu' : "/var/www/html/python/infoxchange",
   }
   
-  files = ['index.py', 'manage.py']
-  directories = ['images', 'static', 'infoxchange', 'store']
+  files = []
+  directories = ['static', 'templates', 'infoxchange', 'store']
   publish_dir = publish_dirs[server]
 
   print("Publishing files to %s (%s)" % (publish_dir, server))
