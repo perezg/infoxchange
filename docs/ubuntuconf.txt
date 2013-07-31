@@ -10,6 +10,12 @@ python manage.py startapp store
 # Extract legacy model
 python manage.py inspectdb > models.py
 
+# After creating the model, sync the db
+python manage.py syncdb
+
+superuser: ricardo
+pass: adminricardo
+
 ----------------------------------------------------------------------------------------------------------------
 sudo add-apt-repository ppa:kubuntu-ppa/backports
 sudo apt-get update

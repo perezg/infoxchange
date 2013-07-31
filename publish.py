@@ -44,7 +44,7 @@ def publishEverything(server):
   }
   
   files = ['index.py', 'manage.py']
-  directories = ['images', 'infoxchange']
+  directories = ['images', 'static', 'infoxchange', 'store']
   publish_dir = publish_dirs[server]
 
   print("Publishing files to %s (%s)" % (publish_dir, server))

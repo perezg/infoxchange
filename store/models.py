@@ -13,6 +13,10 @@ from django.db import models
 class Categories(models.Model):
     category = models.IntegerField(primary_key=True)
     categoryname = models.CharField(max_length=50)
+    
+    def __unicode__(self):
+        return self.categoryname
+    
     class Meta:
         db_table = 'categories'
 
@@ -20,6 +24,10 @@ class CustHist(models.Model):
     customerid = models.ForeignKey('Customers', db_column='customerid')
     orderid = models.IntegerField()
     prod_id = models.IntegerField()
+    
+    def __unicode__(self):
+        return "CustId[%s]OrderId[%s]ProdId[%s]" % (self.customerid, self.orderid, self.prod_id)
+    
     class Meta:
         db_table = 'cust_hist'
 
@@ -44,6 +52,10 @@ class Customers(models.Model):
     age = models.SmallIntegerField(null=True, blank=True)
     income = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=1, blank=True)
+    
+    def __unicode__(self):
+        return "([%s]%s %s)" % (self.customerid, self.firstname, self.lastname)
+      
     class Meta:
         db_table = 'customers'
 

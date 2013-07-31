@@ -65,7 +65,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '/infoxchange/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -115,20 +115,20 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     # An authentication system
-    #'django.contrib.auth',
+    'django.contrib.auth',
     # A framework for content types.
-    #'django.contrib.contenttypes',
+    'django.contrib.contenttypes',
     # A session framework
-    #'django.contrib.sessions',
+    'django.contrib.sessions',
     'django.contrib.sites',
     # A messaging framework.
-    #'django.contrib.messages',
+    'django.contrib.messages',
     # A framework for managing static files.
-    #'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
     'store',
 )
 
