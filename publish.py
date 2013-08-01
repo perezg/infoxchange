@@ -44,13 +44,13 @@ def publishEverything(server):
   }
   
   files = []
-  directories = ['static', 'templates', 'infoxchange', 'store']
+  directories = ['static', 'templates', 'infoxchange', 'store', 'api']
   publish_dir = publish_dirs[server]
 
   print("Publishing files to %s (%s)" % (publish_dir, server))
 
-  if(publishlib.query_yes_no("Do you want to delete %s?" % publish_dir, 'no')):
-      publishlib.myExec("sudo rm -rf %s" % publish_dir)
+  #if(publishlib.query_yes_no("Do you want to delete %s?" % publish_dir, 'no')):
+  publishlib.myExec("sudo rm -rf %s" % publish_dir)
 
   # Publish
   publishlib.publish(publish_dir, files, directories, "Publishing infoxchange")
