@@ -1,5 +1,6 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
+from tastypie.paginator import Paginator
 from store.models import Customers, Products, Categories
 
 class CustomersResource(ModelResource):
@@ -21,3 +22,4 @@ class ProductsResource(ModelResource):
   class Meta:
     queryset = Products.objects.all()
     resource_name = 'products'
+    paginator_class = Paginator

@@ -1,0 +1,67 @@
+{% extends "home/menu.html" %}
+{% load static %}
+
+{% block centerFrameJS_CSS %}
+  <!-- Tabview dependencies -->
+    <!-- Sam Skin CSS for TabView -->
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/tabview/assets/skins/sam/tabview.css">
+
+    <!-- Source file for TabView -->
+    <script src="http://yui.yahooapis.com/2.9.0/build/tabview/tabview-min.js"></script>
+  <!-- End Tabview dependencies -->
+  
+  <!-- Connection Manager dependencies -->
+    <script src="http://yui.yahooapis.com/2.9.0/build/connection/connection-min.js"></script> 
+  <!-- End Connection Manager dependencies -->
+  
+  <!-- button dependencies -->
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/button/assets/skins/sam/button.css">
+  <script src="http://yui.yahooapis.com/2.9.0/build/button/button-min.js"></script>
+  
+  <!-- dialog dependencies -->
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/container/assets/skins/sam/container.css">
+  <script src="http://yui.yahooapis.com/2.9.0/build/container/container-min.js"></script>
+  
+  <!-- datatable dependencies -->
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/datatable/assets/skins/sam/datatable.css" />
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/json/json-min.js"></script>
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/datasource/datasource-min.js"></script>
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/event-delegate/event-delegate-min.js"></script>
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/datatable/datatable-min.js"></script>
+  <!-- OPTIONAL: Get Utility (enables dynamic script nodes for DataSource) -->
+  <script src="http://yui.yahooapis.com/2.9.0/build/get/get-min.js"></script>
+  
+  <!-- custom javascript -->
+  <script src="{% static "js/home/tabs.js" %}"></script>
+  <script src="{% static "js/home/httprequest.js" %}"></script>
+  <script src="{% static "js/home/datatable.js" %}"></script>
+{% endblock %}
+
+{% block centerFrame %}
+<div id="tabs" class="yui-navset yui-pe">
+  <ul class="yui-nav">
+      <li class="selected"><a href="#tab1"><em>HTTPRequest</em></a></li>
+      <li><a href="#tab2"><em>Datatable</em></a></li>
+  </ul>            
+  <div class="yui-content">
+      <div id="tab1-content">
+	<button id="btnGetCategories"></button>
+	<button id="btnRequestError"></button>
+	<div id="xhr-content" class="yui-pe">
+	  <p>No results yet</p>
+	</div>
+      </div>
+      <div id="tab2-content">
+	<p>No results yet</p>
+      </div>
+  </div>
+</div>
+<div id="error-dialog" class="yui-pe">
+  <div class="hd">An error ocurred</div>
+    <div id="error-content" class="bd">
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block centerFrameJS %}{% endblock %}
