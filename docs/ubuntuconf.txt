@@ -16,6 +16,33 @@ python manage.py syncdb
 superuser: ricardo
 pass: adminricardo
 
+
+Templates
+http://www.djangobook.com/en/2.0/chapter04.html
+
+Template tags
+https://docs.djangoproject.com/en/dev/ref/templates/builtins/
+
+URLs
+https://docs.djangoproject.com/en/dev/topics/http/urls/
+
+Tutorials
+https://code.djangoproject.com/wiki/Tutorials
+
+
+Piston - framework for creating RESTful APIs   <--- incompatible with django 1.5
+sudo pip install django-piston
+
+Tasty-pie
+sudo pip install django-tastypie
+
+
+
+----------------------------------------------------------------------------------------------------------------
+YUI
+Menus
+http://www.packtpub.com/article/yui-2-8-menus
+
 ----------------------------------------------------------------------------------------------------------------
 sudo add-apt-repository ppa:kubuntu-ppa/backports
 sudo apt-get update
