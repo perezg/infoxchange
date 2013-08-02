@@ -43,6 +43,13 @@ YUI
 Menus
 http://www.packtpub.com/article/yui-2-8-menus
 
+
+PostgreSQL
+----------------------------------------------------------------------------------------------------------------
+Basic commands
+http://manikandanmv.wordpress.com/tag/basic-psql-commands/
+
+
 ----------------------------------------------------------------------------------------------------------------
 sudo add-apt-repository ppa:kubuntu-ppa/backports
 sudo apt-get update
