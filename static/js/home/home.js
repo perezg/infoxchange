@@ -32,29 +32,39 @@ var myHomePage = (function () {
     _initLayout();
     
     var resourceName = "categories";
-    onSchemaLoaded(resourceName, function() {_createDataTable(resourceName, "tab1-content")});
+    onSchemaLoaded(resourceName, _createDataTable, [resourceName, "tab1-content"]);
     
     resourceName = "products";
-    onSchemaLoaded(resourceName, function() {_createDataTable(resourceName, "tab2-content")});
+    onSchemaLoaded(resourceName, _createDataTable, [resourceName, "tab2-content"]);
   }
   
   
-  function onSchemaLoaded(resourceName, registeredFunction) {
+  function onSchemaLoaded(resourceName, registeredFunction, parameters) {
     if(typeof(_schemaLoadedEvents[resourceName]) == "undefined") {
-      _schemaLoadedEvents[resourceName] = registeredFunction;
+      _schemaLoadedEvents[resourceName] = {
+	func: registeredFunction,
+	params: parameters
+      }
     } else {
-      oldFunction = _schemaLoadedEvents[resourceName];
+      oldFunction = _schemaLoadedEvents[resourceName].func;
+      oldParams = _schemaLoadedEvents[resourceName].params;
       
-      _schemaLoadedEvents[resourceName] = function() {
-	oldFunction();
-	registeredFunction();
+      _schemaLoadedEvents[resourceName] = {
+	func: function() {
+	  oldFunction.apply(null, oldParams);
+	  registeredFunction.apply(null, parameters);
+	},
+	params: []
       }
     }
   }
   
   function _schemaLoaded(resourceName) {
     if(typeof(_schemaLoadedEvents[resourceName]) != "undefined") {
-      _schemaLoadedEvents[resourceName]();
+      var registeredFunction = _schemaLoadedEvents[resourceName].func;
+      var parameters = _schemaLoadedEvents[resourceName].params;
+      
+      registeredFunction.apply(null, parameters);
     }
   }
   
@@ -134,6 +144,7 @@ var myHomePage = (function () {
    * @param {String} containerId Container to draw in the datatable
    */
   function _createDataTable(resourceName, containerId) {
+    console.log(resourceName);
     var fieldList = [];
     for(var field in _modelSchema[resourceName].fields) {
       fieldList.push(field);
