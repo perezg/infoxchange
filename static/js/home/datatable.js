@@ -35,9 +35,9 @@ function loadDataTable() {
   ];
 
   var myDataSource = new YAHOO.util.DataSource("/infoxchange/api/v1/products/?");
-    myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-    myDataSource.connXhrMode = "queueRequests";
-    myDataSource.responseSchema = {
+  myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+  myDataSource.connXhrMode = "queueRequests";
+  myDataSource.responseSchema = {
       resultsList: "objects",
       fields: ["prod_id","category","title","actor","price","special"]
   };
@@ -55,3 +55,84 @@ function loadDataTable() {
     oDT: myDataTable
   };
 };
+
+
+
+/*
+ * Create a YAHOO.util.DataSource
+ * (those arguments marked with * are required)
+ * @method: buildDataSource( {
+ * 	*source		Where the data is located
+ * 	responseType	Any of the following
+ * 			TYPE_JSARRAY
+ * 			TYPE_JSON		(default)
+ * 			TYPE_XML
+ * 			TYPE_TEXT
+ * 			TYPE_HTMLTABLE
+ * 	*fields		Array of string names for each field of data coming in
+ * 			(required if responseSchema is not provide)
+ * 	responseSchema	Defines how the data is structured, by default it assumes the fields are
+ * 			inside of 'objects'
+ */ 			
+function buildDataSource(args) {
+  var myDataSource = new YAHOO.util.DataSource("/infoxchange/api/v1/products/?");
+  myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+  myDataSource.connXhrMode = "queueRequests";
+  myDataSource.responseSchema = {
+      resultsList: "objects",
+      fields: ["prod_id","category","title","actor","price","special"]
+  };
+}
+
+
+var myRevealingModule = function () {
+  
+  function init() {
+    
+  }
+
+  /*
+    * Create a YAHOO.widget.DataTable using and insert it on the specified container
+    * (those arguments marked with * are required)
+    * @method: buildDataTable( { 
+    *     *containerId: 	String with the id of the container
+    *     *columnDefs:	Array with the datatable column definition
+    * 			[
+    * 				{ 
+    * 				       *key: 		"field_name",
+    * 					field:		"fieldname", // Map to the datasource, default is the column's key
+    * 					label: 		"Field Name",
+    * 					sortable:	true/false,
+    * 					resizeable:	true/false,
+    * 					selected:	true/false,
+    * 					formater:	funcFormater, // Function pointer
+    *					hidden:		true/false,
+    * 					width:		number,
+    *					minWidth:	number,
+    * 			]
+    * 	sourceUrl: 	Where the data is located (if dataSource is not provided)
+    * 	fields:		Array containing the mapping to the datasource (if dataSource is not provided)
+    * 	dataSource:	YAHOO.util.DataSource object
+    * } )
+  */
+  funtion buildDataTable(args) {
+    args = args || {};
+    
+    var dataSource = (args.dataSource ? args.dataSource | )
+    
+    if(args.dataSource) {
+      
+    } else {
+      
+    }
+  }
+  
+  
+  return {
+    init:		init,
+    buildDataTable:	buildDataTable,
+    buildDataSource:	buildDataSource,
+  }
+}
+
+myRevealingModule.init();

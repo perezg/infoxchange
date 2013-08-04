@@ -25,9 +25,7 @@
 	background-color: #FFFFFF;
       }
     </style>
-    <!-- Common Dependencies -->
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-      
+    <!-- Common Dependencies -->      
       <script src="http://yui.yahooapis.com/2.9.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
       <script src="http://yui.yahooapis.com/2.9.0/build/container/container_core-min.js"></script>
     <!-- End Common Dependencies -->
@@ -133,17 +131,19 @@
   </body>
   <script language="javascript">
     // Main Layout
+    /*
     YAHOO.util.Event.onDOMReady(function () {
       var myLayout = new YAHOO.widget.Layout({
 	  units: [
 	      { position: 'top', body: 'topFrame', height: 70, collapse: false, resize: false },
-	      { position: 'left', body: 'leftFrame', width: 200, collapse: false, resize: false },
+	      { position: 'left', body: 'leftFrame', width: 200, collapse: false, resize: false, zIndex: 1 },
 	      { position: 'center', body: 'centerFrame', scroll:true }
 	  ]
       });
       
       myLayout.render();
     });
+    */
     // End main layout
   </script>
   

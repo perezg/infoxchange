@@ -1,5 +1,15 @@
-{% extends "home/menu.html" %}
+{% extends "base.html" %}
 {% load static %}
+
+{% block leftFrameJS_CSS %}
+<!-- Menu dependencies -->
+  <!-- Core + Skin CSS -->
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/menu/assets/skins/sam/menu.css">
+  
+  <!-- Source File -->
+  <script src="http://yui.yahooapis.com/2.9.0/build/menu/menu-min.js"></script>
+<!-- End Menu dependencies -->
+{% endblock %}
 
 {% block centerFrameJS_CSS %}
   <!-- Tabview dependencies -->
@@ -31,37 +41,35 @@
   <!-- OPTIONAL: Get Utility (enables dynamic script nodes for DataSource) -->
   <script src="http://yui.yahooapis.com/2.9.0/build/get/get-min.js"></script>
   
+  <!-- Used for humanize strings -->
+  <!-- Source: https://raw.github.com/jprichardson/string.js/master/lib/string.min.js" -->
+  <script src="{% static "js/string.min.js" %}"></script>
+  
   <!-- custom javascript -->
-  <script src="{% static "js/home/tabs.js" %}"></script>
-  <script src="{% static "js/home/httprequest.js" %}"></script>
-  <script src="{% static "js/home/datatable.js" %}"></script>
+  <script src="{% static "js/home/home.js" %}"></script>
+{% endblock %}
+
+{% block leftFrame %}
+  <div id="navmenu" class="yuimenu">
+  </div>
 {% endblock %}
 
 {% block centerFrame %}
-<div id="tabs" class="yui-navset yui-pe">
-  <ul class="yui-nav">
-      <li class="selected"><a href="#tab1"><em>HTTPRequest</em></a></li>
-      <li><a href="#tab2"><em>Datatable</em></a></li>
-  </ul>            
-  <div class="yui-content">
-      <div id="tab1-content">
-	<button id="btnGetCategories"></button>
-	<button id="btnRequestError"></button>
-	<div id="xhr-content" class="yui-pe">
+  <div id="tabs" class="yui-navset yui-pe">
+    <ul class="yui-nav">
+	<li class="selected"><a href="#tab1"><em>HTTPRequest</em></a></li>
+	<li><a href="#tab2"><em>Datatable</em></a></li>
+    </ul>            
+    <div class="yui-content">
+	<div id="tab1-content">
 	  <p>No results yet</p>
 	</div>
-      </div>
-      <div id="tab2-content">
-	<p>No results yet</p>
-      </div>
-  </div>
-</div>
-<div id="error-dialog" class="yui-pe">
-  <div class="hd">An error ocurred</div>
-    <div id="error-content" class="bd">
+	<div id="tab2-content">
+	  <p>No results yet</p>
+	</div>
     </div>
   </div>
-</div>
 {% endblock %}
 
+{% block leftFrameJS %}{% endblock %}
 {% block centerFrameJS %}{% endblock %}
