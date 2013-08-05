@@ -182,16 +182,12 @@ var myHomePage = (function () {
     };
     
     var myConfig = {
-      initialRequest: "?format=json",
+      initialRequest: myRequestBuilder(),
       generateRequest: myRequestBuilder,
       dynamicData: true,
       paginator: new YAHOO.widget.Paginator({
-	rowsPerPage: 25,
-	//template: YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE,
-	//rowsPerPageOptions: [10,25,50,100],
-	//pageLinks: 5
+	rowsPerPage : 100
       }),
-      //draggableColumns:true
     };
   
     // Create datatable
@@ -208,6 +204,7 @@ var myHomePage = (function () {
       return oPayload;
     };
     
+    // Enable click event
     _dataTables[resourceName].subscribe('cellClickEvent', _dataTables[resourceName].onEventShowCellEditor);
   }
   
