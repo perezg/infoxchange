@@ -5,7 +5,7 @@ import sys
 path = os.path.realpath(os.path.join(os.path.dirname(__file__), '../'))
 
 # Path to virtualenv
-vepath = os.path.realpath(os.path.join(path, 'BASE'))
+vepath = os.path.realpath(os.path.join(path, 'BASE/lib/python2.7/site-packages/'))
 
 prev_sys_path = list(sys.path)
 
