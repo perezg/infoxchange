@@ -172,13 +172,18 @@ var myHomePage = (function () {
     var myRequestBuilder = function(oState, oSelf) {
       // Get states or use defaults
       oState = oState || { pagination: null, sortedBy: null };
+      var sortField = (oState.sortedBy) ? oState.sortedBy.key : ""; 
+      var sortDir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_DESC) ? "-" : "";
       var offset = (oState.pagination) ? oState.pagination.recordOffset : 0;
       var limit = (oState.pagination) ? oState.pagination.rowsPerPage : 100;
 
+      var sortRequest = (sortField == "") ? "" : "&order_by=" + sortDir + sortField;
+      
       // Build custom request
       return  "?format=json" +
 	      "&offset=" + offset +
-	      "&limit=" + limit;
+	      "&limit=" + limit +
+	      sortRequest;
     };
     
     var myConfig = {
@@ -321,15 +326,14 @@ var myHomePage = (function () {
       attr.sortable = true;
       
       // Only allow editing on Non-Unique fields
-      /*
       if(resource.fields[columnName].unique == false) {
 	if(resource.fields[columnName].type == "integer" ||
 	   resource.fields[columnName].type == "decimal") {
-	  attr.editor = "new YAHOO.widget.TextboxCellEditor({ validator: YAHOO.widget.DataTable.validateNumber });"
+	  attr.editor = new YAHOO.widget.TextboxCellEditor({ validator: YAHOO.widget.DataTable.validateNumber });
 	} else {
-	  attr.editor = "new YAHOO.widget.TextboxCellEditor();"
+	  attr.editor = new YAHOO.widget.TextboxCellEditor();
 	}
-      }*/
+      }
       
       // Set label
       /*

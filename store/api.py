@@ -9,11 +9,13 @@ class CustomersResource(ModelResource):
     resource_name = 'customers'
     excludes = ['email', 'password', 'creditcard', 'creditcardtype', 'creditcardexpiration', 'income']
     allowed_methods = ['get']
+    ordering = Customers._meta.get_all_field_names()
 
 class CategoriesResource(ModelResource):
   class Meta:
     queryset = Categories.objects.all()
     resource_name = 'categories'
+    ordering = Categories._meta.get_all_field_names()
 
 class ProductsResource(ModelResource):
   #category = fields.ForeignKey(CategoriesResource, 'category')
@@ -23,3 +25,4 @@ class ProductsResource(ModelResource):
     queryset = Products.objects.all()
     resource_name = 'products'
     paginator_class = Paginator
+    ordering = Products._meta.get_all_field_names()
