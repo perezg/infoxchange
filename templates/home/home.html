@@ -41,6 +41,11 @@
   <!-- OPTIONAL: Get Utility (enables dynamic script nodes for DataSource) -->
   <script src="http://yui.yahooapis.com/2.9.0/build/get/get-min.js"></script>
   
+  <!-- paginator dependencies -->
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/paginator/assets/skins/sam/paginator.css">
+  <script src="http://yui.yahooapis.com/2.9.0/build/paginator/paginator-min.js"></script>
+  
+  
   <!-- Used for humanize strings -->
   <!-- Source: https://raw.github.com/jprichardson/string.js/master/lib/string.min.js" -->
   <script src="{% static "js/string.min.js" %}"></script>
@@ -57,8 +62,9 @@
 {% block centerFrame %}
   <div id="tabs" class="yui-navset yui-pe">
     <ul class="yui-nav">
-	<li class="selected"><a href="#tab1"><em>HTTPRequest</em></a></li>
-	<li><a href="#tab2"><em>Datatable</em></a></li>
+	<li class="selected"><a href="#tab1"><em>Tab 1</em></a></li>
+	<li><a href="#tab2"><em>Tab 2</em></a></li>
+	<li><a href="#tab2"><em>Tab 3</em></a></li>
     </ul>            
     <div class="yui-content">
 	<div id="tab1-content">

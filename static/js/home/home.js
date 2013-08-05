@@ -1,7 +1,6 @@
 var myHomePage = (function () {
   
   var //
-  _dataSources = {},
   _dataTables = {},
   _widgets = {},
   _modelSchema = {},
@@ -31,40 +30,53 @@ var myHomePage = (function () {
   function _initDOM() {
     _initLayout();
     
-    var resourceName = "categories";
-    onSchemaLoaded(resourceName, _createDataTable, [resourceName, "tab1-content"]);
-    
-    resourceName = "products";
-    onSchemaLoaded(resourceName, _createDataTable, [resourceName, "tab2-content"]);
+    onSchemaLoaded("all", _addResourceToMenu, []);
   }
   
   
+  /*
+   * Allows to register callbacks functions to be executed when the schema resource
+   * has finished to load
+   * @method onSchemaLoaded
+   * @param {String} resourceName Name of the resource in the API
+   * 		     use "all" in case of register the function for all the schemaLoaded events
+   * @param {Function} registeredFunction Pointer to the callback function
+   * @param {Array} parameters Array containing the parameters to be passed to the
+   *                           callback function
+   */
   function onSchemaLoaded(resourceName, registeredFunction, parameters) {
     if(typeof(_schemaLoadedEvents[resourceName]) == "undefined") {
-      _schemaLoadedEvents[resourceName] = {
-	func: registeredFunction,
-	params: parameters
-      }
-    } else {
-      oldFunction = _schemaLoadedEvents[resourceName].func;
-      oldParams = _schemaLoadedEvents[resourceName].params;
-      
-      _schemaLoadedEvents[resourceName] = {
-	func: function() {
-	  oldFunction.apply(null, oldParams);
-	  registeredFunction.apply(null, parameters);
-	},
-	params: []
-      }
+      _schemaLoadedEvents[resourceName] = [];
     }
+    
+    if(typeof(parameters) == "undefined") {
+      parameters = [];
+    }
+    
+    _schemaLoadedEvents[resourceName].push({
+      func: registeredFunction,
+      params: parameters
+    });
   }
   
+  /*
+   * Executes all the callback functions registered for execution
+   * on load of the specified resource in the schema
+   * @method _schemaLoaded
+   * @param {String} resourceName Name of the resource in the API
+   */
   function _schemaLoaded(resourceName) {
-    if(typeof(_schemaLoadedEvents[resourceName]) != "undefined") {
-      var registeredFunction = _schemaLoadedEvents[resourceName].func;
-      var parameters = _schemaLoadedEvents[resourceName].params;
+    var allEvents = _schemaLoadedEvents["all"] || [];
+    var resourceEvents = _schemaLoadedEvents["resourceName"] || [];
+    
+    registeredFuncs = resourceEvents.concat(allEvents);
+    
+    for(var i = 0; i < registeredFuncs.length; i++) {
+      var obj = registeredFuncs[i];
+      var newParams = [].concat(obj.params);
+      newParams.push(resourceName);
       
-      registeredFunction.apply(null, parameters);
+      obj.func.apply(null, newParams);
     }
   }
   
@@ -99,25 +111,6 @@ var myHomePage = (function () {
       position: "static",
       lazyload: true
     });
-
-    //	Add items to the Menu instance by passing an array of object literals 
-    //	(each of which represents a set of YAHOO.widget.MenuItem 
-    //	configuration properties) to the "addItems" method.
- 
-    _widgets.leftMenu.addItems([ 
-      { text: "Customers", onclick: { fn: onMenuItemClick },
-	submenu: {
-	  id: "CustomerOptions",
-	  itemdata: [
-	    { text: "Create", onclick: { fn: onMenuItemClick } },
-	    { text: "Search", onclick: { fn: onMenuItemClick } },
-	  ]
-	}
-      },
-      { text: "Orders", onclick: { fn: onMenuItemClick }  },
-      { text: "Products", onclick: { fn: onMenuItemClick }  },
-      { text: "Inventory", onclick: { fn: onMenuItemClick }  },
-    ]);
     
     //	Since this Menu instance is built completely from script, call the 
     //	"render" method passing in the DOM element that it should be 
@@ -129,6 +122,24 @@ var myHomePage = (function () {
   }
   
   /*
+   * Add a resource to the menu
+   * @method _addResourceToMenu
+   * @param {String} resourceName Name of the resource in the API
+   */
+  function _addResourceToMenu(resourceName) {
+    var title = S(resourceName).humanize().toString();
+    
+    _widgets.leftMenu.addItems([
+      { text: title, onclick: { fn: _onResourceItemClick, obj: { resourceName: resourceName } } }
+    ]);
+    
+    _widgets.leftMenu.render();
+     
+    _widgets.leftMenu.show();
+  }
+  
+  
+  /*
    * Creates the main tab layout
    * @method _createTabs
    */
@@ -136,36 +147,68 @@ var myHomePage = (function () {
     _widgets.mainTabs = new YAHOO.widget.TabView("tabs");
   };
   
+  
+  /*
+   * Load the resource's data on the tabs
+   * @method _onResourceItemClick
+   * @param {String} resourceName Name of the resource in the API
+   */
+  function _onResourceItemClick(action, e, parameters) {
+    resourceName = parameters.resourceName;
+    _createResourceDataTable(resourceName, "tab1-content");
+  }
+  
 
   /*
-   * Creates datatables based on the data contained on _modelSchema
-   * @method _createDataTable
+   * Creates DataTables based on the resource's data contained on _modelSchema
+   * @method _createResourceDataTable
    * @param {String} resourceName Name of the resource in the API
    * @param {String} containerId Container to draw in the datatable
    */
-  function _createDataTable(resourceName, containerId) {
-    console.log(resourceName);
-    var fieldList = [];
-    for(var field in _modelSchema[resourceName].fields) {
-      fieldList.push(field);
-    }
-    var responseSchema = { 
-      resultsList: "objects",
-      fields: fieldList
-    };
-    
+  function _createResourceDataTable(resourceName, containerId) {
+    var responseSchema = _modelSchema[resourceName].responseSchema;
     var dataSource = _buildDataSource(_apiUrl + resourceName + "/", responseSchema);
   
-    var myConfig = {};
-    myConfig["initialRequest"] = "?format=json";
+    var myRequestBuilder = function(oState, oSelf) {
+      // Get states or use defaults
+      oState = oState || { pagination: null, sortedBy: null };
+      var offset = (oState.pagination) ? oState.pagination.recordOffset : 0;
+      var limit = (oState.pagination) ? oState.pagination.rowsPerPage : 100;
+
+      // Build custom request
+      return  "?format=json" +
+	      "&offset=" + offset +
+	      "&limit=" + limit;
+    };
+    
+    var myConfig = {
+      initialRequest: "?format=json",
+      generateRequest: myRequestBuilder,
+      dynamicData: true,
+      paginator: new YAHOO.widget.Paginator({
+	rowsPerPage: 25,
+	//template: YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE,
+	//rowsPerPageOptions: [10,25,50,100],
+	//pageLinks: 5
+      }),
+      //draggableColumns:true
+    };
   
     // Create datatable
-    var myDataTable = new YAHOO.widget.DataTable(
+    _dataTables[resourceName] = new YAHOO.widget.DataTable(
       containerId, 
       _modelSchema[resourceName].columns,
       dataSource, 
       myConfig
-    );    
+    );
+    
+    // Get total records from server
+    _dataTables[resourceName].handleDataReturnPayload = function (oRequest, oResponse, oPayload) {
+      oPayload.totalRecords = oResponse.meta.totalRecords;
+      return oPayload;
+    };
+    
+    _dataTables[resourceName].subscribe('cellClickEvent', _dataTables[resourceName].onEventShowCellEditor);
   }
   
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -250,7 +293,8 @@ var myHomePage = (function () {
    * @method _createResourceColumnDef
    * @param {String} resourceName Name of the resource in the API
    */
-  function _createResourceColumnDef(resourceName) { 
+  function _createResourceColumnDef(resourceName) {
+    var fieldList = [];
     var resource = _modelSchema[resourceName];
     
     resource.columns = [];
@@ -264,11 +308,12 @@ var myHomePage = (function () {
       for(var field in resource.fields) {
 	if(field != "resource_uri") {
 	  columns.push(field);
+	  fieldList.push(field);
 	}
       }
     }
     
-    for(var i in columns) {
+    for(var i=0; i < columns.length; i++) {
       var columnName = columns[i];
       
       // Clone the attributes for all
@@ -277,6 +322,17 @@ var myHomePage = (function () {
       // Set default attributes
       attr.key = columnName;
       attr.sortable = true;
+      
+      // Only allow editing on Non-Unique fields
+      /*
+      if(resource.fields[columnName].unique == false) {
+	if(resource.fields[columnName].type == "integer" ||
+	   resource.fields[columnName].type == "decimal") {
+	  attr.editor = "new YAHOO.widget.TextboxCellEditor({ validator: YAHOO.widget.DataTable.validateNumber });"
+	} else {
+	  attr.editor = "new YAHOO.widget.TextboxCellEditor();"
+	}
+      }*/
       
       // Set label
       /*
@@ -296,7 +352,15 @@ var myHomePage = (function () {
       }
       
       resource.columns.push(attr);
+      fieldList.push(columnName);
     }
+    
+    // Create the expected responseSchema
+    _modelSchema[resourceName].responseSchema = { 
+      resultsList: "objects",
+      fields: fieldList,
+      metaFields: { totalRecords: "meta.total_count" }
+    };
   }
   
   /*
