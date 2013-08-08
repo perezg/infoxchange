@@ -1,6 +1,7 @@
 var myHomePage = (function () {
   
   var //
+  _tabviews = {},
   _dataTables = {},
   _widgets = {},
   _modelSchema = {},
@@ -95,18 +96,18 @@ var myHomePage = (function () {
     });
     
     _widgets.layout.on('render', function() {
-      YAHOO.util.Event.onContentReady("navmenu", _createMenu);
-      YAHOO.util.Event.onContentReady("tabs", _createTabs);        
+      YAHOO.util.Event.onContentReady("navmenu", _initMenu);
+      YAHOO.util.Event.onContentReady("tab-container", _initTabView);        
     });
     
     _widgets.layout.render();
   }
   
   /*
-   * Create the left menu widget
-   * @method _createMenu
+   * Initializes the left menu widget
+   * @method _initMenu
    */
-  function _createMenu() {
+  function _initMenu() {
     _widgets.leftMenu = new YAHOO.widget.Menu("navmenu", { 
       position: "static",
       lazyload: true
@@ -138,27 +139,201 @@ var myHomePage = (function () {
     _widgets.leftMenu.show();
   }
   
+  /*
+   * Displays only the specified tabview(s), this method is public
+   * It can receive a non-limited list of tabNames to be displayed
+   * @method displayTabViews
+   * @param {String} sTabViewId the name of tab to display
+   */
+  function displayTabViews(/*sTabViewId1, ..., sTabViewId(n)*/) {
+    var args = Array.prototype.slice.call(arguments);
+        
+    // Hide all tabs
+    for(var oTabView in _tabviews) {
+      YAHOO.util.Dom.addClass(oTabView, "yui-hidden");
+    }
+    
+    // Show the specified tabview(s)
+    for(var i = 0; i < args.length; i++) {
+      var sTabViewId = args[i];
+      var oTabView = _tabviews[sTabViewId].tabview;
+      YAHOO.util.Dom.removeClass(oTabView, "yui-hidden");
+    }
+  }
+  
   
   /*
-   * Creates the main tab layout
-   * @method _createTabs
+   * Initializes the welcome tab layout
+   * @method _initTabView
    */
-  function _createTabs() {
-    _widgets.mainTabs = new YAHOO.widget.TabView("tabs");
+  function _initTabView() {
+    _createTabView("welcome-tabs", "tab-container", null);
   };
+  
+  
+  /*
+   * Create a new Tabview
+   * @method _createTabView
+   * @param {String} sId Identifier to be used
+   * @param {String} sContainerId Container identifier
+   * @param {Object/Array} oTabs Object or array of tab objects to be added to the tabview
+   */
+  function _createTabView(sId, sContainerId, oTabs) {
+    // Check if html markup exists
+    var oTabView = YAHOO.util.Dom.get(sId);
+    
+    if(oTabView == null) {
+      oTabView = new YAHOO.widget.TabView();
+    } else {
+      oTabView = new YAHOO.widget.TabView(sId);
+    }
+    
+    // Set the HTML id
+    YAHOO.util.Dom.setAttribute(oTabView, 'id', sId);
+    
+    _tabviews[sId] = {
+      tabview: oTabView,
+      tabs: [],
+    };
+        
+    // If the param is an object, encapsulate it in an array
+    // in order to make it has the same interface
+    if(oTabs != null) {
+      if(typeof(oTabs) == "object") {
+	oTabs = [oTabs];
+      }
+    
+      for(var i = 0; i < oTabs.length; i++) {
+	var oTab = oTabs[i];
+	_tabviews[sId].tabs.push(oTab);
+	_tabviews[sId].tabview.addTab(oTab);
+      }
+    }
+    
+    _tabviews[sId].tabview.appendTo(sContainerId);
+  }
+  
+  /*
+   * Creates a new tab
+   * @method _createTab
+   * @param {String} sLabel label to be displayed
+   * @param {String} sId identifier to be assigned to the new tab
+   * @return {Object} returns the created tab
+   */
+  function _createTab(sLabel, sId) {
+    oTab = new YAHOO.widget.Tab({
+      label: sLabel,
+      content: "<div id='" + sId + "'></div>",
+      active:true
+    });
+    
+    YAHOO.util.Dom.setAttribute(oTab, 'id', "header-" + sId);
+
+    return oTab;
+  }
   
   
   /*
    * Load the resource's data on the tabs
    * @method _onResourceItemClick
-   * @param {String} resourceName Name of the resource in the API
+   * @param {String} action Name of the action performed
+   * @param {Object} e Event object
+   * @param {Object} parameters Aditional arguments sent to the function
    */
   function _onResourceItemClick(action, e, parameters) {
-    resourceName = parameters.resourceName;
-    _createResourceDataTable(resourceName, "tab1-content");
+    var sResourceName = parameters.resourceName;
+    var sTabViewId = sResourceName + "-tabs";
+    var sDataTabId = sResourceName + "-data-tab";
+    var sContainerId = "tab-container";
+    
+    // Hide all tabs
+    displayTabViews();
+    
+    // Create tab if not already created
+    if(!_tabviews[sTabViewId]) {
+      _createTabView(sTabViewId, sContainerId, _createTab("Data", sDataTabId));
+      
+      // Create DataTable
+      _createResourceDataTable(sResourceName, sDataTabId);
+    } else {
+      // If it is already created, display it
+      displayTabViews(sTabViewId);
+    }
+  }
+  
+  function _hideTab() {
+    
   }
   
 
+  /*
+   * DataTable helper
+   * Returns a request string based on the state of the datatable
+   * @method _myRequestBuilder
+   * @param {Object} oState DataTable state object
+   * @param {Object} oSelf DataTable
+   */
+  function _myRequestBuilder(oState, oSelf) {
+    // Get states or use defaults
+    oState = oState || { pagination: null, sortedBy: null };
+    var sortField = (oState.sortedBy) ? oState.sortedBy.key : ""; 
+    var sortDir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_DESC) ? "" : "-";
+    var offset = (oState.pagination) ? oState.pagination.recordOffset : 0;
+    var limit = (oState.pagination) ? oState.pagination.rowsPerPage : 100;
+
+    var sortRequest = (sortField == "") ? "" : "&order_by=" + sortDir + sortField;
+    
+    // Build custom request
+    return  "?format=json" +
+	    "&offset=" + offset +
+	    "&limit=" + limit +
+	    sortRequest;
+  }
+  
+  /*
+   * DataTable helper
+   * Highlight editable cell, can be use with cellMouseoverEvent
+   * @method _highlightEditableCell
+   * @params {Object} oArgs Event arguments
+   */
+  function _highlightEditableCell(oArgs) { 
+    var elCell = oArgs.target; 
+    if(YAHOO.util.Dom.hasClass(elCell, "yui-dt-editable")) { 
+      this.highlightCell(elCell); 
+    }
+  }
+  
+  /*
+   * DataTable helper
+   * Animates color change after cell is edited
+   * @method _onCellAfterEditAnimation
+   * @params {Object} oArgs Event arguments
+   */
+  function _onCellAfterEditAnimation(oArgs) {
+    var elCell = oArgs.editor.getTdEl();
+    var oOldData = oArgs.oldData;
+    var oNewData = oArgs.newData;
+
+    // Do the animation only if the data has changed
+    if(oOldData != oNewData) {
+      // Grab the row el and the 2 colors
+      var elRow = this.getTrEl(elCell);
+      var origColor = YAHOO.util.Dom.getStyle(elRow.cells[0], "backgroundColor");
+      var pulseColor = "#ff0";
+
+      // Create a temp anim instance that nulls out when anim is complete
+      var rowColorAnim = new YAHOO.util.ColorAnim(elRow.cells, {
+	backgroundColor:{to:origColor, from:pulseColor}, duration:2});
+      var onComplete = function() {
+	rowColorAnim = null;
+	YAHOO.util.Dom.setStyle(elRow.cells, "backgroundColor", "");
+      }
+      
+      rowColorAnim.onComplete.subscribe(onComplete);
+      rowColorAnim.animate();
+    }
+  }
+  
   /*
    * Creates DataTables based on the resource's data contained on _modelSchema
    * @method _createResourceDataTable
@@ -168,27 +343,10 @@ var myHomePage = (function () {
   function _createResourceDataTable(resourceName, containerId) {
     var responseSchema = _modelSchema[resourceName].responseSchema;
     var dataSource = _buildDataSource(_apiUrl + resourceName + "/", responseSchema);
-  
-    var myRequestBuilder = function(oState, oSelf) {
-      // Get states or use defaults
-      oState = oState || { pagination: null, sortedBy: null };
-      var sortField = (oState.sortedBy) ? oState.sortedBy.key : ""; 
-      var sortDir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_DESC) ? "-" : "";
-      var offset = (oState.pagination) ? oState.pagination.recordOffset : 0;
-      var limit = (oState.pagination) ? oState.pagination.rowsPerPage : 100;
-
-      var sortRequest = (sortField == "") ? "" : "&order_by=" + sortDir + sortField;
-      
-      // Build custom request
-      return  "?format=json" +
-	      "&offset=" + offset +
-	      "&limit=" + limit +
-	      sortRequest;
-    };
     
     var myConfig = {
-      initialRequest: myRequestBuilder(),
-      generateRequest: myRequestBuilder,
+      initialRequest: _myRequestBuilder(),
+      generateRequest: _myRequestBuilder,
       dynamicData: true,
       paginator: new YAHOO.widget.Paginator({
 	rowsPerPage : 100
@@ -209,8 +367,20 @@ var myHomePage = (function () {
       return oPayload;
     };
     
-    // Enable click event
-    _dataTables[resourceName].subscribe('cellClickEvent', _dataTables[resourceName].onEventShowCellEditor);
+    // Select row when clicking over it
+    _dataTables[resourceName].subscribe("rowClickEvent", _dataTables[resourceName].onEventSelectRow)
+    
+    // Edit cell when double click over it
+    _dataTables[resourceName].subscribe('cellDblclickEvent', _dataTables[resourceName].onEventShowCellEditor);
+    
+    // Display a color animation after cell editing
+    _dataTables[resourceName].subscribe("editorBlurEvent", _dataTables[resourceName].onEventSaveCellEditor);
+    _dataTables[resourceName].subscribe("editorSaveEvent", _onCellAfterEditAnimation);
+    
+
+    // Highlight editable cell
+    _dataTables[resourceName].subscribe("cellMouseoverEvent", _highlightEditableCell); 
+    _dataTables[resourceName].subscribe("cellMouseoutEvent", _dataTables[resourceName].onEventUnhighlightCell);
   }
   
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -476,5 +646,6 @@ var myHomePage = (function () {
   
   return {
     displayError: displayError,
+    displayTabViews: displayTabViews,
   }
 })();

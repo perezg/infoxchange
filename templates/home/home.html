@@ -44,7 +44,9 @@
   <!-- paginator dependencies -->
   <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/paginator/assets/skins/sam/paginator.css">
   <script src="http://yui.yahooapis.com/2.9.0/build/paginator/paginator-min.js"></script>
-  
+
+  <!-- Animation effects dependencies -->
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.9.0/build/animation/animation-min.js"></script>
   
   <!-- Used for humanize strings -->
   <!-- Source: https://raw.github.com/jprichardson/string.js/master/lib/string.min.js" -->
@@ -52,30 +54,36 @@
   
   <!-- custom javascript -->
   <script src="{% static "js/home/home.js" %}"></script>
+  
+  <!-- custom style -->
+  <link rel="stylesheet" type="text/css" href="{% static "css/home.css" %}">
 {% endblock %}
 
 {% block leftFrame %}
   <div id="navmenu" class="yuimenu">
+    <div class="bd">
+      <ul class="first-of-type">
+	<li class="yuimenuitem">
+	  <a class="yuimenuitemlabel" onclick="myHomePage.displayTabViews('welcome-tabs')">
+	    About
+	  </a>
+	</li>
+      </ul>
+    </div> 
   </div>
 {% endblock %}
 
 {% block centerFrame %}
-  <div id="tabs" class="yui-navset yui-pe">
-    <ul class="yui-nav">
-	<li class="selected"><a href="#data"><em>Data</em></a></li>
-	<li><a href="#tab2"><em>Tab 2</em></a></li>
-	<li><a href="#tab2"><em>Tab 3</em></a></li>
-    </ul>            
-    <div class="yui-content">
-	<div id="tab1-content">
+  <div id="tab-container">
+    <div id="welcome-tabs" class="yui-navset yui-pe">
+      <ul class="yui-nav">
+	<li class="selected"><a href="#welcome"><em>Welcome</em></a></li>
+      </ul>            
+      <div class="yui-content">
+	<div id="tab-welcome">
 	  <p>No results yet</p>
 	</div>
-	<div id="tab2-content">
-	  <p>No results yet</p>
-	</div>
-	<div id="tab3-content">
-	  <p>No results yet</p>
-	</div>
+      </div>
     </div>
   </div>
 {% endblock %}
